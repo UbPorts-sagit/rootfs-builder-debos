@@ -1,0 +1,27 @@
+{{- $architecture := or .architecture "arm64" -}}
+{{- $image := or .image (printf "ubuntu-touch-gstreamer-droid-%s.tar.gz" $architecture) -}}
+{{- $output_type := "tarball" -}}
+
+architecture: {{ $architecture }}
+actions:
+  - action: download
+    description: Download latest ubuntu touch rootfs from CI
+    url: "https://ci.ubports.com/job/xenial-hybris-edge-rootfs-{{ $architecture }}/lastSuccessfulBuild/artifact/out/ubuntu-touch-hybris-xenial-edge-{{ $architecture }}-rootfs.tar.gz"
+    unpack: false
+    filename: ut-rootfs.tar.gz
+    name: ut-rootfs.tar.gz
+
+  - action: unpack
+    description: Unpacking rootfs
+    origin: ut-rootfs.tar.gz
+    compression: gz
+
+  - action: run
+    chroot: true
+    description: Adding gstreamer-droid for camera
+    script: scripts/add-gstreamer-droid-repos.sh
+
+  - action: pack
+    description: Compressing image
+    file: {{ $image }}
+    compression: gz
