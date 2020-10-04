@@ -1,7 +1,7 @@
 {{- $architecture := or .architecture "arm64" -}}
 {{- $image := or .image (printf "ubuntu-touch-android9-%s.tar.gz" $architecture) -}}
 {{- $output_type := "tarball" -}}
-{{- $channel := or .channel "devel" -}}
+{{- $channel := "devel" -}}
 
 architecture: {{ $architecture }}
 actions:
